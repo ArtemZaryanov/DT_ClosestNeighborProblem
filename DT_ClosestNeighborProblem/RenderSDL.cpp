@@ -80,7 +80,7 @@ void RenderSDL::DrawVisibleCone(SDL_Renderer*& ren, const UnitInfo& unitInfo, co
     delete[] points;
     points = nullptr;
 }
-bool RenderSDL::DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* fileTex, const std::vector<int>& neighbors)
+bool RenderSDL::DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* fileTex, const int unit,const std::vector<int>& neighbors)
 {
     if (isInit != true)
     {
@@ -96,25 +96,27 @@ bool RenderSDL::DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* 
     SDL_RenderClear(ren);
     SDL_RenderPresent(ren);
     SDL_FRect r;
-    SDL_SetRenderDrawColor(ren, 0, 34, 255, 0);
-    for (const auto& unitInfo : unitData)
+    SDL_SetRenderDrawColor(ren, 0, 34, 23, 0);
+    UnitInfo unitInfo;
+    for (const int ind:neighbors)
     {
-        //Поменять везде на 0.5? Или ввести доп. переменную типа пополам плюс к кэшированию!!!
+        unitInfo = unitData[ind];
         r.x = unitInfo.posX - unitInfo.w / 2;
         r.y = unitInfo.posY - unitInfo.h / 2;
         r.w = unitInfo.w;
         r.h = unitInfo.h;
         //Отправить структуру или в класс
         DrawUnit(ren, tex, r);
-        SDL_RenderDrawLineF(ren,
-            r.x + r.w * 0.5f,
-            r.y + r.h * 0.5f,
-            r.x + r.w * 0.5f + sqrt(unitInfo.SqDistanceView) * unitInfo.directX,
-            r.y + r.h * 0.5f + sqrt(unitInfo.SqDistanceView) * unitInfo.directY);
-        DrawVisibleCone(ren, unitInfo, 7);
-        //SDL_SetRenderDrawColor(ren, 0, 34, 255, 0);
-
     }
+    unitInfo = unitData[unit];
+    r.x = unitInfo.posX - unitInfo.w / 2;
+    r.y = unitInfo.posY - unitInfo.h / 2;
+    r.w = unitInfo.w;
+    r.h = unitInfo.h;
+        //Отправить структуру или в класс
+    SDL_SetRenderDrawColor(ren, 0, 34, 123, 0);
+    DrawUnit(ren, tex, r);
+    DrawVisibleCone(ren, unitInfo, 7);
 
     SDL_RenderPresent(ren);
     SDL_Delay(5000);
