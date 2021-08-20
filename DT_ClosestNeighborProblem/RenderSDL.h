@@ -27,7 +27,7 @@ public:
 	void DrawUnit(SDL_Renderer*& ren, SDL_Texture*& tex, const SDL_Rect& r);
 	void DrawVisibleCone(SDL_Renderer*& ren, const UnitInfo& unitInfo, const Settings& settings);
 	bool Draw(const std::vector<UnitInfo>& unitData, const char* fileTex, const Settings& settings);
-	bool DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* fileTex,const int unit,const std::vector<int>& neighbors, const Settings& settings);
+	bool DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* fileTex,const size_t unit,const std::vector<size_t>& neighbors, const Settings& settings);
 	void DestroySDL();
 };
 

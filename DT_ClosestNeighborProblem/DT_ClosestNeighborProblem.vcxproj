@@ -153,6 +153,7 @@
     <ClCompile Include="DT_ClosestNeighborProblem.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="GenerateData.cpp" />
+    <ClCompile Include="KDTree.cpp" />
     <ClCompile Include="RenderSDL.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
@@ -160,6 +161,7 @@
     <ClInclude Include="ClosestNeighbors.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GenerateData.h" />
+    <ClInclude Include="KDTree.hpp" />
     <ClInclude Include="RenderSDL.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="Types.h" />

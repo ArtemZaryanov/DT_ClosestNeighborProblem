@@ -33,6 +33,9 @@
     <ClCompile Include="RenderSDL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="KDTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileManager.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RenderSDL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KDTree.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

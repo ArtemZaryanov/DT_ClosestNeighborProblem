@@ -12,6 +12,11 @@ struct UnitInfo
 	int w;
 	int h;
 };
+struct Point
+{
+	int x;
+	int y;
+};
 struct Edge
 {
 	float x0;

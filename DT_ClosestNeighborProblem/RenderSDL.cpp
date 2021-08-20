@@ -6,6 +6,10 @@ RenderSDL::RenderSDL(const Settings& settings,const int countPoint)
     sectorAngle = settings.sectorAngle;
     originPolygon = CreateOriginPolygon(countPoint);
     isInit = InitSDL(settings.screenWidth, settings.screenHeight);
+    if (!isInit)
+    {
+        std::cout << "Render: Init Error" << std::endl;
+    }
 }
 
 bool RenderSDL::InitSDL(const int screenWidth, const int screenHeight)
@@ -47,7 +51,7 @@ void RenderSDL::DrawVisibleCone(SDL_Renderer*& ren, const UnitInfo& unitInfo, co
     //SDL_RenderDrawLine(ren, r0.x, r0.y, points[0].x, points[0].y);
     for (int i = 0; i < originPolygon.size()-1; i++)
     {
-        SDL_RenderDrawLine(ren, points[i].x, settings.screenHeight-points[i].y, points[i + 1].x, settings.screenHeight - points[i + 1].y);
+        SDL_RenderDrawLineF(ren, points[i].x, settings.screenHeight-points[i].y, points[i + 1].x, settings.screenHeight - points[i + 1].y);
     }
     delete[] points;
     points = nullptr;
@@ -112,7 +116,7 @@ std::vector<Edge> RenderSDL::CreateOriginPolygon(const int countEdge)
     points = nullptr;
     return polygon;
 }
-bool RenderSDL::DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* fileTex, const int unit,const std::vector<int>& neighbors,const Settings& settings)
+bool RenderSDL::DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* fileTex, const size_t unit,const std::vector<size_t>& neighbors,const Settings& settings)
 {
     if (isInit != true)
     {

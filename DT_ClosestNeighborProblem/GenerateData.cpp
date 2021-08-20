@@ -2,7 +2,7 @@
 
 std::unordered_map<int, GenerateData::Cell> GenerateData::spaceUniformPartitioning(){
     int N =  width / cellWidth;
-    int M = width / cellHeight;
+    int M = height/ cellHeight;
     std::unordered_map<int, GenerateData::Cell> data;
 
     for (int i = 0; i < M; i++)

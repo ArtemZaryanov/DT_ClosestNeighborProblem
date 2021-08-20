@@ -3,22 +3,28 @@
 #include <vector>
 #include <functional> 
 #include "Types.h"
+#include <time.h>
+#include <iostream>
 #include <SDL.h>
+#include "KDTree.hpp"
 class ClosestNeighbors
 {
 private:
 	float sectorAngle;
 	int sqDOV;
 	std::vector<Edge> originPolygon;
+	const float eps = 0.0001f;
 	std::vector<Edge> CreateOriginPolygon(const int countEdge);
+	// Поиск точек внутри сектора
 	std::vector<Edge> RotatePolygon(const float sin, const float cos, const UnitInfo& unitInfo);
 	bool inside_convex_polygon(const UnitInfo& unitInfo, const std::vector<Edge>& polygon);
-	int get_side(Edge a, Edge b);
-	float cosine_sign(Edge a, Edge b);
-	Edge v_sub(Edge a, Edge b);
+	int get_side(const Edge& a, const Edge& b);
+	float cosine_sign(const Edge& a, const Edge& b);
+	Edge v_sub(const Edge& a, const Edge& b);
 public:
 	ClosestNeighbors(const Settings& settings,const int countEdge);
-	std::map<int, std::vector<int>> FindNeighborsBrute(const std::vector<UnitInfo>& dataUnit);
-	std::vector<int> FindClosestPointInPolygon(const std::vector<Edge>& Polygon, const std::vector<UnitInfo>& dataUnit, const std::vector<int>& neigbors);
+	std::map<size_t, indexArr> FindNeighborsBrute(const std::vector<UnitInfo>& dataUnit);
+	std::map<size_t, indexArr> FindNeighborsKDTree(const std::vector<UnitInfo>& dataUnit);
+	indexArr FindClosestPointInPolygon(const std::vector<Edge>& Polygon, const std::vector<UnitInfo>& dataUnit, const indexArr& neigbors);
 };
 
