@@ -25,11 +25,11 @@ int main(int argc, char* args[])
         return 1;
     }
     //GenerateData
-    /*GenerateData generateData(settings.screenWidth, settings.screenHeight, 4, 4);
-    if (!generateData.generateUnitDataXML("UnitData.xml", 200))
+    GenerateData generateData(settings.screenWidth, settings.screenHeight, 8, 8);
+    if (!generateData.generateUnitDataXML("UnitData.xml", 1000))
     {
         return 1;
-    }*/
+    }
     //LoadData
     std::cout <<std::fixed<< std::setprecision(10);
     clock_t tStartLoad = clock();
@@ -58,7 +58,7 @@ int main(int argc, char* args[])
     RenderSDL renderSDL = RenderSDL(settings,13);
     //renderSDL.Draw(unitData, unitTex);
     //Получить код юнитам и нарисовать только их. У остальных не выделять ничего
-    renderSDL.DrawNeigbors(unitData, unitTex, 1, neighbors[1],settings);
+    renderSDL.DrawNeigbors(unitData, unitTex, 5, neighbors[5],settings);
     renderSDL.DestroySDL();
     return 0;
 }

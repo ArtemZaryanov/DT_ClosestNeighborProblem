@@ -109,6 +109,73 @@ std::vector<Edge> ClosestNeighbors::RotatePolygon(const float sin, const float c
 	return rotatingPolygon;
 }
 
+bool ClosestNeighbors::inside_convex_polygon(const UnitInfo& unitInfo, const std::vector<Edge>& polygon)
+{
+	int previous_side = 0;
+	int n_vertices = polygon.size();
+	Edge a;
+	Edge b;
+	Edge affine_segment;
+	Edge affine_point;
+	int current_side;
+	Edge point{ unitInfo.posX,unitInfo.posY };
+	for (int i = 0; i < n_vertices - 1; i++)
+	{
+		a = polygon[i];
+		b = polygon[(i + 1) % n_vertices];
+		affine_segment = v_sub(b, a);
+		affine_point = v_sub(point, a);
+		current_side = get_side(affine_segment, affine_point);
+		if (current_side == 0)
+		{
+			return false;
+		}
+		else
+		{
+			if (previous_side ==0)
+			{
+				previous_side = current_side;
+			}
+			else
+			{
+				if (previous_side != current_side)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+int ClosestNeighbors::get_side(Edge a, Edge b)
+{
+	int x = cosine_sign(a, b);
+	if (x < 0)
+	{
+		return -1;
+	}
+	else
+	{
+		if (x > 0)
+		{
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+}
+float ClosestNeighbors::cosine_sign(Edge a, Edge b)
+{
+	return a.x0 * b.y0 - a.y0 * b.x0;
+}
+
+Edge ClosestNeighbors::v_sub(Edge a, Edge b)
+{
+	return Edge{ a.x0 - b.x0, a.y0 - b.y0 };
+}
+
 std::vector<int> ClosestNeighbors::FindClosestPointInPolygon(const std::vector<Edge>& polygon, const std::vector<UnitInfo>& dataUnit, const std::vector<int>& neigbors)
 {
 	std::vector<int> closesPoint;
@@ -118,31 +185,37 @@ std::vector<int> ClosestNeighbors::FindClosestPointInPolygon(const std::vector<E
 	float slope = 0;
 	for (size_t k = 0; k < neigbors.size(); k++)
 	{
-		unit = dataUnit[neigbors[k]];
-		for (size_t i = 0; i < polygon.size(); i++)
-		{
-			//in corner
-			if ((unit.posX == polygon[i].x0) && (unit.posY == polygon[i].y0))
-			{
-				inPolygon = true;
-				break;
-			}
-			if ((polygon[i].y0 > unit.posY) != (polygon[j].y0 > unit.posY))
-			{
-				slope = (unit.posX - polygon[i].x0) * (polygon[j].y0 - polygon[i].y0) - (polygon[j].x0 - polygon[i].x0) * (unit.posY - polygon[i].y0);
-				if (slope == 0)
-				{
-					inPolygon = true;
-					break;
-				}
-				if ((slope < 0) != (polygon[j].y0 < polygon[i].y0))
-				{
-					inPolygon = !inPolygon;
-				}
-			}
-			j = i;
-		}
-		if (inPolygon)
+		//unit = dataUnit[neigbors[k]];
+		////for (size_t i = 0; i < polygon.size(); i++)
+		////{
+		////	//in corner
+		////	if ((unit.posX == polygon[i].x0) && (unit.posY == polygon[i].y0))
+		////	{
+		////		inPolygon = true;
+		////		break;
+		////	}
+		////	if ((polygon[i].y0 > unit.posY) != (polygon[j].y0 > unit.posY))
+		////	{
+		////		slope = (unit.posX - polygon[i].x0) * (polygon[j].y0 - polygon[i].y0) - (polygon[j].x0 - polygon[i].x0) * (unit.posY - polygon[i].y0);
+		////		if (slope == 0)
+		////		{
+		////			inPolygon = true;
+		////			break;
+		////		}
+		////		if ((slope < 0) != (polygon[j].y0 < polygon[i].y0))
+		////		{
+		////			inPolygon = !inPolygon;
+		////		}
+		////	}
+		////	j = i;
+		////}
+		//for (int i = 0; i < polygon.size(); i++) {
+		//	if ((polygon[i].y0 < unit.posY && polygon[j].y0 >= unit.posY || polygon[j].y0 < unit.posY && polygon[i].y0 >= unit.posY) &&
+		//		(polygon[i].x0 + (unit.posY - polygon[i].y0) / (polygon[j].y0 - polygon[i].y0) * (polygon[j].x0 - polygon[i].x0) < unit.posX))
+		//		inPolygon = !inPolygon;
+		//	j = i;
+		//}
+		if (inside_convex_polygon(dataUnit[neigbors[k]],polygon))
 		{
 			closesPoint.push_back(neigbors[k]);
 		}
@@ -150,3 +223,4 @@ std::vector<int> ClosestNeighbors::FindClosestPointInPolygon(const std::vector<E
 	}
 	return closesPoint;
 }
+

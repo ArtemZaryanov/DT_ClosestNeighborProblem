@@ -43,45 +43,12 @@ void RenderSDL::DrawUnit(SDL_Renderer*& ren, SDL_Texture*& tex, const SDL_Rect& 
 }
 void RenderSDL::DrawVisibleCone(SDL_Renderer*& ren, const UnitInfo& unitInfo, const Settings& settings)
 {
-    //SDL_Point* points = new SDL_Point[countPoint + 2];
-    //SDL_Point r0{ unitInfo.posX, unitInfo.posY };
-    //SDL_FPoint d{ unitInfo.directX, unitInfo.directY };
-    //float dov = sqrtf((float)settings.SqDistanceView);
-    //float sectorAngle = settings.sectorAngle * D2R;
-    //float s = 0;
-    //float c = 0;
-    //points[0] = r0;
-    //!
-    /*for (int i = -countPoint / 2; i < 0; i++)
-    {
-        s = sinf(sectorAngle * i / countPoint);
-        c = cosf(sectorAngle * i / countPoint);
-        points[i + countPoint / 2 + 1].x = (r0.x + static_cast<int>(dov * (d.x * c - d.y * s)));
-        points[i + countPoint / 2 + 1].y = (r0.y + static_cast<int>(dov * (d.y * c + d.x * s)));
-    }
-    if (countPoint % 2 != 0)
-    {
-
-        points[countPoint / 2 + countPoint % 2].x = (r0.x + static_cast<int>(dov * d.x));
-        points[countPoint / 2 + countPoint % 2].y = (r0.y + static_cast<int>(dov * d.y));
-    }
-    for (int i = 1; i <= countPoint / 2; i++)
-    {
-        s = sinf(sectorAngle * i / countPoint);
-        c = cosf(sectorAngle * i / countPoint);
-        points[i + countPoint / 2 + countPoint % 2].x = (r0.x + static_cast<int>(dov * (d.x * c - d.y * s)));
-        points[i + countPoint / 2 + countPoint % 2].y = (r0.y + static_cast<int>(dov * (d.y * c + d.x * s)));
-    }
-    points[countPoint + 1] = r0;*/
-    //SDL_Point r0{ unitInfo.posX, unitInfo.posY };
     SDL_FPoint* points = RotatePolygon(unitInfo.directX, unitInfo.directY, unitInfo);
     //SDL_RenderDrawLine(ren, r0.x, r0.y, points[0].x, points[0].y);
     for (int i = 0; i < originPolygon.size()-1; i++)
     {
-        SDL_RenderDrawLine(ren, points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
+        SDL_RenderDrawLine(ren, points[i].x, settings.screenHeight-points[i].y, points[i + 1].x, settings.screenHeight - points[i + 1].y);
     }
-    //SDL_RenderDrawLine(ren, points[countPoint+2].x, points[countPoint+2].y, r0.x, r0.y);
-    //SDL_RenderDrawLinesF(ren, points, countPoint+2);
     delete[] points;
     points = nullptr;
 }
@@ -167,7 +134,7 @@ bool RenderSDL::DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* 
     {
         unitInfo = unitData[ind];
         r.x = unitInfo.posX - unitInfo.w / 2;
-        r.y = unitInfo.posY - unitInfo.h / 2;
+        r.y = settings.screenHeight-( unitInfo.posY - unitInfo.h / 2);
         r.w = unitInfo.w;
         r.h = unitInfo.h;
         //Отправить структуру или в класс
@@ -175,7 +142,7 @@ bool RenderSDL::DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* 
     }
     unitInfo = unitData[unit];
     r.x = unitInfo.posX - unitInfo.w / 2;
-    r.y = unitInfo.posY - unitInfo.h / 2;
+    r.y = settings.screenHeight - (unitInfo.posY - unitInfo.h / 2);
     r.w = unitInfo.w;
     r.h = unitInfo.h;
         //Отправить структуру или в класс
