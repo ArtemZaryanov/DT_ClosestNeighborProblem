@@ -9,31 +9,39 @@
 #include "ClosestNeighbors.h"
 #include "RenderSDL.h"
 #include <time.h>
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+//const int SCREEN_WIDTH = 640;
+//const int SCREEN_HEIGHT = 480;
 const char* unitTex = "C:/Users/user/source/repos/DT_ClosestNeighborProblem/res/circle.png";
+const char* pathSettings = "Settings.xml";
+const char* pathUnitData = "UnitData.xml";
 int main(int argc, char* args[])
 {
+    //LoadSettings
+    FileManager filemanager;
+    Settings settings;
+    if (!filemanager.LoadSettings(pathSettings, settings))
+    {
+        std::cout << "FileManager: LoadSettingsError" << std::endl;
+        return 1;
+    }
     //GenerateData
-    /*GenerateData generateData(SCREEN_WIDTH, SCREEN_HEIGHT, 4, 4);
-    if (!generateData.generateUnitDataXML("UnitData.xml",300))
+    /*GenerateData generateData(settings.screenWidth, settings.screenHeight, 4, 4);
+    if (!generateData.generateUnitDataXML("UnitData.xml", 200))
     {
         return 1;
     }*/
     //LoadData
     std::cout <<std::fixed<< std::setprecision(10);
     clock_t tStartLoad = clock();
-
     std::vector<UnitInfo> unitData;
-    FileManager filemanager;
-    filemanager.LoadDataUnit("UnitData.xml", unitData); 
-    std::cout << "LoadTime: " << (double)(clock() - tStartLoad) / CLOCKS_PER_SEC << std::endl;
+    filemanager.LoadDataUnit(pathUnitData, unitData);
+    std::cout << "LoadTime: " << (clock() - (double)tStartLoad) / CLOCKS_PER_SEC << std::endl;
     //Calculate
-    ClosestNeighbors closestNeigbors;
+    ClosestNeighbors closestNeigbors(settings, 13);
     //Brute
     clock_t tStartCalculateBrute = clock();
     auto neighbors = closestNeigbors.FindNeighborsBrute(unitData);
-    std::cout << "CalculteBruteTime: " << (double)(clock() - tStartCalculateBrute) / CLOCKS_PER_SEC << std::endl;
+    std::cout << "CalculteBruteTime: " << (clock() - (double)tStartCalculateBrute) / CLOCKS_PER_SEC << std::endl;
     for (size_t i = 0; i < unitData.size(); i++)
     {
         if (neighbors.find(i) != neighbors.end())
@@ -47,10 +55,10 @@ int main(int argc, char* args[])
     }
     //Нарисовать конус видимости и окрасить тех, кого видно в один цвет с обработанным агентом
     //Render
-    RenderSDL renderSDL = RenderSDL(SCREEN_WIDTH, SCREEN_HEIGHT);
+    RenderSDL renderSDL = RenderSDL(settings,13);
     //renderSDL.Draw(unitData, unitTex);
     //Получить код юнитам и нарисовать только их. У остальных не выделять ничего
-    renderSDL.DrawNeigbors(unitData, unitTex, 1, neighbors[1]);
+    renderSDL.DrawNeigbors(unitData, unitTex, 1, neighbors[1],settings);
     renderSDL.DestroySDL();
     return 0;
 }

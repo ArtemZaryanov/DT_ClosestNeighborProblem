@@ -1,8 +1,15 @@
 #include "ClosestNeighbors.h"
 
+ClosestNeighbors::ClosestNeighbors(const Settings& settings, const int countEdge)
+{
+	sqDOV = settings.SqDistanceView;
+	sectorAngle = settings.sectorAngle;
+	originPolygon = CreateOriginPolygon(countEdge);
+}
+
 std::map<int, std::vector<int>> ClosestNeighbors::FindNeighborsBrute(const std::vector<UnitInfo>& dataUnit)
 {
-	auto sqDistance = [](float x, float y) { return x*x + y*y; };
+	auto sqDistance = [](int x, int y) { return x*x + y*y; };
 	std::map<int, std::vector<int>> neighbors;
 	UnitInfo uM;
 	UnitInfo uIt;
@@ -17,7 +24,7 @@ std::map<int, std::vector<int>> ClosestNeighbors::FindNeighborsBrute(const std::
 		{
 
 			uIt = dataUnit[j];
-			if (sqDistance(uM.posX - uIt.posX, uM.posY - uIt.posY) < uM.SqDistanceView&&i!=j)
+			if (sqDistance(uM.posX - uIt.posX, uM.posY - uIt.posY) < sqDOV&&i!=j)
 			{
 				//Будут повторения
 				neighbors[i].push_back(j);
@@ -27,33 +34,34 @@ std::map<int, std::vector<int>> ClosestNeighbors::FindNeighborsBrute(const std::
 	int N = 13;
 	// Отбор по области видимости
 	//O(3nN))
-	std::vector<Edge> polygon;
-
+	std::vector<Edge> rotatingPolygon;
+	float angle;
 	for (int i = 0; i < neighbors.size(); i++)
 	{
 		//O(2*N));
-		polygon = CreatePolygon(dataUnit[i], 13);
+		//RotatePolygon
+		rotatingPolygon = RotatePolygon(dataUnit[i].directX, dataUnit[i].directY,dataUnit[i]);
 		//O(2p[i]N));
-		neighbors[i] = FindClosestPointInPolygon(polygon, dataUnit, neighbors[i]);
+		neighbors[i] = FindClosestPointInPolygon(rotatingPolygon, dataUnit, neighbors[i]);
 	}
 	return neighbors;
 }
-std::vector<Edge> ClosestNeighbors::CreatePolygon(const UnitInfo& unitInfo, const int countEdge)
+std::vector<Edge> ClosestNeighbors::CreateOriginPolygon(const int countEdge)
 {
 	std::vector<Edge> polygon;
 	SDL_FPoint* points = new SDL_FPoint[countEdge + 2];
-	SDL_FPoint r0{ unitInfo.posX, unitInfo.posY };
-	SDL_FPoint d{ unitInfo.directX, unitInfo.directY };
-	float dov = sqrtf(unitInfo.SqDistanceView);
-	float sectorAngle = unitInfo.sectorAngle * D2R;
+	SDL_FPoint r0{ 0,0 };
+	SDL_FPoint d{ 1, 0};
+	float dov = sqrtf((float)sqDOV);
+	float sectorAngleRadians = sectorAngle * D2R;
 	float s = 0;
 	float c = 0;
 	points[0] = r0;
 	//!
 	for (int i = -countEdge / 2; i < 0; i++)
 	{
-		s = sinf(sectorAngle * i / countEdge);
-		c = cosf(sectorAngle * i / countEdge);
+		s = sinf(sectorAngleRadians * i / countEdge);
+		c = cosf(sectorAngleRadians * i / countEdge);
 		points[i + countEdge / 2 + 1].x = (r0.x + dov * (d.x * c - d.y * s));
 		points[i + countEdge / 2 + 1].y = (r0.y + dov * (d.y * c + d.x * s));
 	}
@@ -65,20 +73,20 @@ std::vector<Edge> ClosestNeighbors::CreatePolygon(const UnitInfo& unitInfo, cons
 	}
 	for (int i = 1; i <= countEdge / 2; i++)
 	{
-		s =  sinf(sectorAngle * i / countEdge);
-		c = cosf(sectorAngle * i / countEdge);
+		s =  sinf(sectorAngleRadians * i / countEdge);
+		c = cosf(sectorAngleRadians * i / countEdge);
 		points[i + countEdge / 2 + countEdge % 2].x = (r0.x + dov * (d.x * c - d.y * s));
 		points[i + countEdge / 2 + countEdge % 2].y = (r0.y + dov * (d.y * c + d.x * s));
 	}
 	points[countEdge + 1] = r0;
-	for (int i = 1; i <= countEdge + 1; i++)
+	for (int i = 0; i <= countEdge + 1; i++)
 	{
 		polygon.push_back(
 			{
-				points[i - 1].x,
-				points[i - 1].y,
 				points[i].x,
 				points[i].y,
+				//points[i].x,
+				//points[i].y,
 
 			}
 		);
@@ -88,11 +96,24 @@ std::vector<Edge> ClosestNeighbors::CreatePolygon(const UnitInfo& unitInfo, cons
 	return polygon;
 }
 
+std::vector<Edge> ClosestNeighbors::RotatePolygon(const float sin, const float cos,const UnitInfo& unitInfo)
+{
+	std::vector<Edge> rotatingPolygon;
+	for (const auto& edje : originPolygon)
+	{
+		rotatingPolygon.push_back({
+			unitInfo.posX + edje.x0 * cos - edje.y0 * sin,
+			unitInfo.posY + edje.x0 * sin + edje.y0 * cos
+			});
+	}
+	return rotatingPolygon;
+}
+
 std::vector<int> ClosestNeighbors::FindClosestPointInPolygon(const std::vector<Edge>& polygon, const std::vector<UnitInfo>& dataUnit, const std::vector<int>& neigbors)
 {
 	std::vector<int> closesPoint;
 	UnitInfo unit;
-	int j = neigbors.size() - 1;
+	size_t j = polygon.size() - 1;
 	bool inPolygon=false;
 	float slope = 0;
 	for (size_t k = 0; k < neigbors.size(); k++)

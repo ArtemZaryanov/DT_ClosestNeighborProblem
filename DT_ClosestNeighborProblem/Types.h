@@ -1,23 +1,30 @@
 #pragma once
 struct UnitInfo
 {
-	float sectorAngle;
-	float SqDistanceView;
+	//float sectorAngle;
+	//int SqDistanceView;
 	float directX;
 	float directY;
-	float posX;
-	float posY;
+	int posX;
+	int posY;
 	// Test
 	int hash;
-	float w;
-	float h;
+	int w;
+	int h;
 };
 struct Edge
 {
 	float x0;
 	float y0;
-	float x1;
-	float y1;
+	//int x1;
+	//int y1;
+};
+struct Settings
+{
+	int screenWidth;
+	int screenHeight;
+	float sectorAngle;
+	int SqDistanceView;
 };
 const float D2R = 1 / 57.29578f;
 const float R2D = 1 / 0.017453f;
