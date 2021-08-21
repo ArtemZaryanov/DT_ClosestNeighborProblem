@@ -12,6 +12,7 @@
 const char* unitTex = "C:/Users/user/source/repos/DT_ClosestNeighborProblem/res/circle.png";
 const char* pathSettings = "Settings.xml";
 const char* pathUnitData = "UnitData.xml";
+const char* neighborsData = "UnitNeighbors.xml";
 int main(int argc, char* args[])
 {
     //LoadSettings
@@ -23,8 +24,8 @@ int main(int argc, char* args[])
         return 1;
     }
     //GenerateData
-    GenerateData generateData(settings.screenWidth, settings.screenHeight, 10, 10);
-    if (!generateData.generateUnitDataXML("UnitData.xml", 500))
+    GenerateData generateData(settings.screenWidth, settings.screenHeight, 2, 2);
+    if (!generateData.generateUnitDataXML("UnitData.xml", 10000))
     {
         return 1;
     }
@@ -58,8 +59,8 @@ int main(int argc, char* args[])
     //Render
     RenderSDL renderSDL = RenderSDL(settings,13);
     //renderSDL.Draw(unitData, unitTex);
-    //Получить код юнитам и нарисовать только их. У остальных не выделять ничего
-    renderSDL.DrawNeigbors(unitData, unitTex, 100, neighborsKDTree[100],settings);
+    filemanager.SaveDataUnit(neighbors, neighborsData);
+    renderSDL.DrawNeigbors(unitData, unitTex, 6, neighborsKDTree[6],settings);
     renderSDL.DestroySDL();
     return 0;
 }

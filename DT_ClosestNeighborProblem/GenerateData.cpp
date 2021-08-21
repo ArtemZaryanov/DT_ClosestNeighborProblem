@@ -29,21 +29,17 @@ std::vector<UnitInfo> GenerateData::generateUnitData(size_t count)
     data = spaceUniformPartitioning();
     std::vector<UnitInfo> unitData;
     Cell cell;
-    int hash=-1;
-    std::set<int> generatedHash{ -1 };
     int angle;
     size_t sizeData = data.size();
-    for (size_t i = 0; i < count; i++)
+    for (const auto& uData:data)
     {
-        while (generatedHash.find(hash) != generatedHash.end())
+        if (unitData.size() == count)
         {
-            hash = rand() % sizeData;
+            break;
         }
-        generatedHash.insert(hash);
         angle = rand();
-        cell = data[hash];
-        
-        unitData.push_back(UnitInfo{sinf((float)angle),cosf((float)angle),cell.x0 + cell.w / 2,cell.y0 + cell.h / 2,hash,cell.w,cell.h });
+        cell = uData.second;
+        unitData.push_back(UnitInfo{ sinf((float)angle),cosf((float)angle),cell.x0 + cell.w / 2,cell.y0 + cell.h / 2,hash,cell.w,cell.h });
     }
     return unitData;
 }

@@ -134,7 +134,7 @@ bool RenderSDL::DrawNeigbors(const std::vector<UnitInfo>& unitData, const char* 
     SDL_Rect r;
     SDL_SetRenderDrawColor(ren, 0, 34, 23, 0);
     UnitInfo unitInfo;
-    for (const int ind:neighbors)
+    for (const size_t ind:neighbors)
     {
         unitInfo = unitData[ind];
         r.x = unitInfo.posX - unitInfo.w / 2;

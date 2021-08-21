@@ -1,4 +1,6 @@
 #pragma once
+#include<vector>
+using indexArr = std::vector< size_t >;
 struct UnitInfo
 {
 	//float sectorAngle;

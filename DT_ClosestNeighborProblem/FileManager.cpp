@@ -63,6 +63,34 @@ bool FileManager::LoadDataUnit(const char* file, std::vector<UnitInfo>& unitData
 
     return true;
 }
-void FileManager::SaveDataUnit(const std::string file)
+bool FileManager::SaveDataUnit(std::map<size_t, indexArr> neighborsMap, const char* file)
 {
+    tinyxml2::XMLDocument xml;
+    tinyxml2::XMLNode* pRoot = xml.NewElement("UnitNeighbors");
+    xml.InsertFirstChild(pRoot);
+    tinyxml2::XMLElement* pElement;
+    //std::char unitNeighborsStr;
+    for (const auto& neighbors : neighborsMap)
+    {
+        pElement = xml.NewElement("Unit");
+        pElement->SetAttribute("countNeighbors", neighbors.second.size());
+        /*pElement->FirstAttribute().
+        unitNeighborsStr =
+        for (const size_t neigh:neighbors.second)
+        {
+            pElemen
+            unitNeighborsStr*/
+            pElement->SetAttribute("neighbors", &*(neighbors.second.begin()));
+        //    pElemen
+        //}
+            pRoot->InsertEndChild(pElement);
+        
+    }
+    tinyxml2::XMLError eResult = xml.SaveFile(file);
+    if (eResult != tinyxml2::XMLError::XML_SUCCESS)
+    {
+        std::cout << "TinyXML:Don't create XML" << std::endl;
+        return false;
+    }
+    return true;
 }
