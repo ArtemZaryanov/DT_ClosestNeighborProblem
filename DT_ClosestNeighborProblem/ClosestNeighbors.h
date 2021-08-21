@@ -7,6 +7,7 @@
 #include <iostream>
 #include <SDL.h>
 #include "KDTree.hpp"
+using indexArr = std::vector< size_t >;
 class ClosestNeighbors
 {
 private:

@@ -92,44 +92,28 @@ public:
     explicit KDTree(pointVec point_array);
     //My
     explicit KDTree(std::vector<UnitInfo> unit_array);
+
 private:
-    KDNodePtr nearest_(           //
+    pointIndexArr neighborhood_(  //
         const KDNodePtr& branch,  //
         const point_t& pt,        //
-        const size_t& level,      //
-        const KDNodePtr& best,    //
-        const double& best_dist   //
+        const double& rad,        //
+        const size_t& level       //
     );
-
-    // default caller
-    KDNodePtr nearest_(const point_t& pt);
-
-public:
-  /*  point_t nearest_point(const point_t& pt);
-    size_t nearest_index(const point_t& pt);
-    pointIndex nearest_pointIndex(const point_t& pt);*/
-
-private:
-    //pointIndexArr neighborhood_(  //
-    //    const KDNodePtr& branch,  //
-    //    const point_t& pt,        //
-    //    const double& rad,        //
-    //    const size_t& level       //
-    //);
     //My
     pointIndexArr neighborhoodOp2dim_(const KDNodePtr& branch, const point_t& pt, const double& r2, const size_t& level);
 public:
-    //pointIndexArr neighborhood(  //
-    //    const point_t& pt,       //
-    //    const double& rad);
+    pointIndexArr neighborhood(  //
+        const point_t& pt,       //
+        const double& rad);
 
-    //pointVec neighborhood_points(  //
-    //    const point_t& pt,         //
-    //    const double& rad);
+    pointVec neighborhood_points(  //
+        const point_t& pt,         //
+        const double& rad);
 
-    //indexArr neighborhood_indices(  //
-    //    const point_t& pt,          //
-    //    const double& rad);
+    indexArr neighborhood_indices(  //
+        const point_t& pt,          //
+        const double& rad);
     //My
     indexArr neighborhood_indices_Opt(  //
         const point_t& pt,                  //

@@ -23,11 +23,11 @@ int main(int argc, char* args[])
         return 1;
     }
     //GenerateData
-   /* GenerateData generateData(settings.screenWidth, settings.screenHeight, 2, 2);
-    if (!generateData.generateUnitDataXML("UnitData.xml", 10000))
+    GenerateData generateData(settings.screenWidth, settings.screenHeight, 10, 10);
+    if (!generateData.generateUnitDataXML("UnitData.xml", 500))
     {
         return 1;
-    }*/
+    }
     //LoadData
     std::cout <<std::fixed<< std::setprecision(10);
     clock_t tStartLoad = clock();
@@ -55,7 +55,6 @@ int main(int argc, char* args[])
             std::cout << "Unit " << i << ":" << 0 << std::endl;
         }
     }*/
-    //Ќарисовать конус видимости и окрасить тех, кого видно в один цвет с обработанным агентом
     //Render
     RenderSDL renderSDL = RenderSDL(settings,13);
     //renderSDL.Draw(unitData, unitTex);

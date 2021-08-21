@@ -48,18 +48,20 @@ std::map<size_t, indexArr> ClosestNeighbors::FindNeighborsBrute(const std::vecto
 }
 std::map<size_t, indexArr> ClosestNeighbors::FindNeighborsKDTree(const std::vector<UnitInfo>& dataUnit)
 {
-	//Строим  O(nlogn)
-	//std::vector<std::vector<int>> points;
+	// Делим пространство на квадраты со стороной 2*DVO и сортируем по ним
+	std::vector<std::vector<int>> points;
 	KDTree kdTree(dataUnit);
 	std::map<size_t, indexArr> neighbors;
 
 	// Поиск соседей
-	//O(n^2)->O(n^2/2)
 	clock_t tStartCalculateKDTree1 = clock();
 	indexArr neighborsUnit;
+	std::vector<double> point{ 0,0 };//(double)dataUnit[i].posX, (double)dataUnit[i].posY
 	for (int i = 0; i < dataUnit.size(); i++)
 	{
-		neighbors[i] = kdTree.neighborhood_indices_Opt(std::vector<double>{(double)dataUnit[i].posX, (double)dataUnit[i].posY},sqDOV);
+		point[0] = (double)dataUnit[i].posX;
+		point[1] = (double)dataUnit[i].posY;
+		neighbors[i] = kdTree.neighborhood_indices_Opt(point,sqDOV);
 
 	}
 
