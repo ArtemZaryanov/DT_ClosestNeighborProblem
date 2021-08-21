@@ -39,7 +39,7 @@ std::vector<UnitInfo> GenerateData::generateUnitData(size_t count)
         }
         angle = rand();
         cell = uData.second;
-        unitData.push_back(UnitInfo{ sinf((float)angle),cosf((float)angle),cell.x0 + cell.w / 2,cell.y0 + cell.h / 2,hash,cell.w,cell.h });
+        unitData.push_back(UnitInfo{ sinf((float)angle),cosf((float)angle),cell.x0 + cell.w / 2,cell.y0 + cell.h / 2,uData.first,cell.w,cell.h });
     }
     return unitData;
 }
